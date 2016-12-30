@@ -113,10 +113,34 @@ class ViewController: UIViewController {
         tictacimg8.image = nil
         tictacimg9.image = nil
     }
-
-    func aiturn()
-    {
-    }
+    
+//    func rowcheck(value:Int) -> (location:String,pattern:String){
+//        var acceptabelfinds = ["110", "101", "011"]
+//        var findfuncs = [checktop, checkbottom, chackleft, checkright, checkleftacross, chackrightacross, checkdiagleftright, checkdiagrightleft]
+//        
+//        for algorithm in findfuncs{
+//            var algorithmresults = algorithm(value:value)
+//            if find(acceptablefinds,algorithmresults.pattern)
+//            {
+//                
+//            }
+//        }
+//        
+//    
+//    }
+//
+//    func aiturn(){
+//        if done{
+//            return
+//        }
+//        
+//        aideciding = true
+//        
+//        if let result = rowcheck(value: 0){
+//        }
+//        
+//    }
+//    
     
     override func viewDidLoad() {
         super.viewDidLoad()
