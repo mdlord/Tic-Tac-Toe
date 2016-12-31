@@ -114,33 +114,209 @@ class ViewController: UIViewController {
         tictacimg9.image = nil
     }
     
-//    func rowcheck(value:Int) -> (location:String,pattern:String){
-//        var acceptabelfinds = ["110", "101", "011"]
-//        var findfuncs = [checktop, checkbottom, chackleft, checkright, checkleftacross, chackrightacross, checkdiagleftright, checkdiagrightleft]
-//        
-//        for algorithm in findfuncs{
-//            var algorithmresults = algorithm(value:value)
-//            if find(acceptablefinds,algorithmresults.pattern)
-//            {
-//                
-//            }
-//        }
-//        
-//    
-//    }
-//
-//    func aiturn(){
-//        if done{
-//            return
-//        }
-//        
-//        aideciding = true
-//        
-//        if let result = rowcheck(value: 0){
-//        }
-//        
-//    }
-//    
+    func checkbottom(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [7,8,9]))
+    }
+
+    func checktop(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [1,2,3]))
+    }
+    
+    func checkleft(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [1,4,7]))
+    }
+    
+    func checkrigth(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [3,6,9]))
+    }
+    
+    func checkmiddleacross(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [4,5,6]))
+    }
+    
+    func checkmiddledown(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [2,5,8]))
+    }
+    
+    func checkdiagleftright(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [1,5,9]))
+    }
+    
+    func checkdiagrightleft(value: Int)-> (location:String,pattern:String){
+        return ("bottom", checkfor(value: value, inList: [3,5,7]))
+    }
+    
+    func checkfor(value:Int, inList:[Int])-> String{
+        var conclusion = ""
+        for cell in inList{
+            if plays[cell] == value{
+                conclusion += "1"
+            }
+            else{
+                conclusion += "0"
+            }
+        }
+        return conclusion
+        
+        
+        
+        
+    }
+    
+    func rowcheck(value:Int) -> (location:String,pattern:String){
+        var acceptabelfinds = ["110", "101", "011"]
+        var findfuncs = [checktop, checkbottom, checkleft, checkrigth, checkmiddleacross, checkmiddledown, checkdiagleftright, checkdiagrightleft]
+        
+        for algorithm in findfuncs{
+            var algorithmresults = algorithm(value)
+            if find(acceptabelfinds,algorithmresults.pattern){
+                return algorithmresults
+            }
+        }
+    }
+    
+    func occupied(spot:Int)->Bool{
+        return Bool((plays[spot] != nil))
+    }
+
+    func aiturn(){
+        if done{
+            return
+        }
+        
+        aiDeciding = true
+        let result = rowcheck(value:0)
+
+            var wheretoplayresult = wheretoplay(location: result.location, pattern:result.pattern)
+            if !occupied(spot: wheretoplayresult)
+            {
+                aiDeciding = false
+                checkwin()
+                return
+            }
+        
+        let result2 = rowcheck(value:1)
+
+            var wheretoplayresult2 = wheretoplay(location: result2.location, pattern:result2.pattern)
+            if !occupied(spot: wheretoplayresult2)
+            {
+                aiDeciding = false
+                checkwin()
+                return
+            }
+        
+        if !occupied(spot: 5)
+        {
+            setimage(spot: 5, player: 0)
+            aiDeciding = false
+            checkwin()
+            return
+        }
+        
+        
+        
+        let corneravailable = firstavailable(iscorner: true)
+        if corneravailable{
+            setimage(spot: <#T##Int#>, player: <#T##Int#>)
+        }
+        
+    }
+    
+    func wheretoplay(location:String, pattern:String)-> Int{
+        
+        var leftp = "011"
+        var rightp = "110"
+        var midp = "101"
+        
+        switch location{
+        case "top":
+            if pattern == leftp{
+                return 1
+            }
+            else if pattern == rightp{
+                return 3
+            }
+            else {
+                return 2
+            }
+        case "bottom":
+            if pattern == leftp{
+                return 7
+            }
+            else if pattern == rightp{
+                return 9
+            }
+            else {
+                return 8
+            }
+        case "left":
+            if pattern == leftp{
+                return 1
+            }
+            else if pattern == rightp{
+                return 7
+            }
+            else {
+                return 4
+            }
+
+        case "right":
+            if pattern == leftp{
+                return 3
+            }
+            else if pattern == rightp{
+                return 9
+            }
+            else {
+                return 6
+            }
+
+        case "midvert":
+            if pattern == leftp{
+                return 2
+            }
+            else if pattern == rightp{
+                return 8
+            }
+            else {
+                return 5
+            }
+
+        case "midacross":
+            if pattern == leftp{
+                return 4
+            }
+            else if pattern == rightp{
+                return 6
+            }
+            else {
+                return 5
+            }
+        case "diagleftright":
+            if pattern == leftp{
+                return 1
+            }
+            else if pattern == rightp{
+                return 9
+            }
+            else {
+                return 5
+            }
+        case "diagrightleft":
+            if pattern == leftp{
+                return 3
+            }
+            else if pattern == rightp{
+                return 7
+            }
+            else {
+                return 5
+            }
+        default: return 4
+
+        }
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
