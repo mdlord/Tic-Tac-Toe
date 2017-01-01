@@ -41,7 +41,8 @@ class ViewController: UIViewController {
     @IBAction func UIbtnclick(sender: UIButton)
     {
         //usermessage.isHidden = true
-        if !(plays[sender.tag] != nil) && !aiDeciding && !done{
+        if !(plays[sender.tag] != nil) && !aiDeciding && !done
+        {
             setimage(spot: sender.tag, player:1)
         }
         checkwin()
@@ -55,7 +56,7 @@ class ViewController: UIViewController {
     
     func setimage(spot:Int, player:Int )
     {
-        let playermark =  player == 1 ?    "x" : "o"
+        let playermark =  player == 1 ?  "x"  :  "o"
         plays[spot] = player
         switch spot{
         case 1:
@@ -97,6 +98,7 @@ class ViewController: UIViewController {
             done = true;
             }
         }
+        done = false
     }
 
     
@@ -119,31 +121,31 @@ class ViewController: UIViewController {
     }
 
     func checktop(value: Int)-> (location:String,pattern:String){
-        return ("bottom", checkfor(value: value, inList: [1,2,3]))
+        return ("top", checkfor(value: value, inList: [1,2,3]))
     }
     
     func checkleft(value: Int)-> (location:String,pattern:String){
-        return ("bottom", checkfor(value: value, inList: [1,4,7]))
+        return ("left", checkfor(value: value, inList: [1,4,7]))
     }
     
     func checkrigth(value: Int)-> (location:String,pattern:String){
-        return ("bottom", checkfor(value: value, inList: [3,6,9]))
+        return ("right", checkfor(value: value, inList: [3,6,9]))
     }
     
     func checkmiddleacross(value: Int)-> (location:String,pattern:String){
-        return ("bottom", checkfor(value: value, inList: [4,5,6]))
+        return ("middleacross", checkfor(value: value, inList: [4,5,6]))
     }
     
     func checkmiddledown(value: Int)-> (location:String,pattern:String){
-        return ("bottom", checkfor(value: value, inList: [2,5,8]))
+        return ("middledown", checkfor(value: value, inList: [2,5,8]))
     }
     
     func checkdiagleftright(value: Int)-> (location:String,pattern:String){
-        return ("bottom", checkfor(value: value, inList: [1,5,9]))
+        return ("diagleftright", checkfor(value: value, inList: [1,5,9]))
     }
     
     func checkdiagrightleft(value: Int)-> (location:String,pattern:String){
-        return ("bottom", checkfor(value: value, inList: [3,5,7]))
+        return ("diagrightleft", checkfor(value: value, inList: [3,5,7]))
     }
     
     func checkfor(value:Int, inList:[Int])-> String{
@@ -157,22 +159,39 @@ class ViewController: UIViewController {
             }
         }
         return conclusion
-        
-        
-        
-        
     }
     
-    func rowcheck(value:Int) -> (location:String,pattern:String){
-        var acceptabelfinds = ["110", "101", "011"]
-        var findfuncs = [checktop, checkbottom, checkleft, checkrigth, checkmiddleacross, checkmiddledown, checkdiagleftright, checkdiagrightleft]
+//    func findar(inList:[String], pattern:String) -> Bool?
+//    {
+//        
+//        //var n = inList.size()
+//        for i in 1...3
+//        {
+//            if inList[i]==pattern
+//            {
+//                return true
+//            }
+//            
+//        }
+//        return false
+//    
+//    }
+    
+    func rowcheck(value:Int) -> (location:String,pattern:String)?
+    {
+//        var acceptabelfinds = ["110", "101", "011"]
+        let findfuncs = [checktop, checkbottom, checkleft, checkrigth, checkmiddleacross, checkmiddledown, checkdiagleftright, checkdiagrightleft]
         
-        for algorithm in findfuncs{
-            var algorithmresults = algorithm(value)
-            if find(acceptabelfinds,algorithmresults.pattern){
+        for algorithm in findfuncs
+        {
+            let algorithmresults = algorithm(value)
+            let pat = algorithmresults.pattern
+            if ["110", "101", "011"].index(of: pat) != nil
+            {
                 return algorithmresults
             }
         }
+        return nil
     }
     
     func occupied(spot:Int)->Bool{
@@ -185,26 +204,26 @@ class ViewController: UIViewController {
         }
         
         aiDeciding = true
-        let result = rowcheck(value:0)
-
-            var wheretoplayresult = wheretoplay(location: result.location, pattern:result.pattern)
+        if let result = rowcheck(value:0)
+        {
+            var wheretoplayresult = wheretoplay(location: (result.location), pattern:(result.pattern))
             if !occupied(spot: wheretoplayresult)
             {
                 aiDeciding = false
                 checkwin()
                 return
             }
-        
-        let result2 = rowcheck(value:1)
-
-            var wheretoplayresult2 = wheretoplay(location: result2.location, pattern:result2.pattern)
+        }
+        if let result = rowcheck(value:1)
+        {
+            var wheretoplayresult2 = wheretoplay(location: (result.location), pattern:(result.pattern))
             if !occupied(spot: wheretoplayresult2)
             {
                 aiDeciding = false
                 checkwin()
                 return
             }
-        
+        }
         if !occupied(spot: 5)
         {
             setimage(spot: 5, player: 0)
@@ -214,19 +233,46 @@ class ViewController: UIViewController {
         }
         
         
-        
-        let corneravailable = firstavailable(iscorner: true)
-        if corneravailable{
-            setimage(spot: <#T##Int#>, player: <#T##Int#>)
+        func firstavailable(iscorner:Bool)-> Int?
+        {
+            let spots = iscorner ? [1,3,7,9]:[2,4,6,8]
+            for spot in spots
+            {
+                if !occupied(spot: spot)
+                {
+                    print(spot)
+                    return spot
+                }
+            }
+            return nil
         }
+        
+        if let corneravailable = firstavailable(iscorner: true)
+        {
+            setimage(spot: corneravailable, player: 0)
+            aiDeciding = false
+            checkwin()
+            return
+        }
+        
+        if let sideavailable = firstavailable(iscorner: false)
+        {
+            setimage(spot: sideavailable, player: 0)
+            aiDeciding = false
+            checkwin()
+            return
+        }
+        
+        reset()
+        aiDeciding = false
         
     }
     
     func wheretoplay(location:String, pattern:String)-> Int{
         
-        var leftp = "011"
-        var rightp = "110"
-        var midp = "101"
+        let leftp = "011"
+        let rightp = "110"
+        let midp = "101"
         
         switch location{
         case "top":
@@ -271,7 +317,7 @@ class ViewController: UIViewController {
                 return 6
             }
 
-        case "midvert":
+        case "middledown":
             if pattern == leftp{
                 return 2
             }
@@ -282,7 +328,7 @@ class ViewController: UIViewController {
                 return 5
             }
 
-        case "midacross":
+        case "middleacross":
             if pattern == leftp{
                 return 4
             }
