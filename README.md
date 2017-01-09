@@ -1,6 +1,5 @@
 # Tic-Tac-Toe
 
-working on the app for 2 player option as well
 the AI part works based on the following algo
 
 A player can play a perfect game of Tic-tac-toe (to win or, at least, draw) if they choose the first available move from the following list, each turn, as used in Newell and Simon's 1972 tic-tac-toe program.[6]
@@ -17,3 +16,9 @@ A player can play a perfect game of Tic-tac-toe (to win or, at least, draw) if t
     ->Opposite Corner: If the opponent is in the corner, play the opposite corner.
     ->Empty Corner: Play an empty corner.
     ->Empty Side: Play an empty side.
+    
+    
+    working on:
+-> the app for 2 player on the same device.
+-> the app for 2 players over a small area network.
+
